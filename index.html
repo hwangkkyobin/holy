@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Windows Moving</title>
+  <script>
+    window.onload = function () {
+      const windows = [];
+      const url = "https://media.tenor.com/aUh7cpr1JCsAAAAM/memz.gif"; // https://media.tenor.com/aUh7cpr1JCsAAAAM/memz.gif
+
+      // 10개의 창 열기
+      for (let i = 0; i < 10; i++) {
+        const newWindow = window.open(
+          url,
+          `_blank`,
+          `width=300,height=200,left=${i * 50},top=${i * 50}`
+        );
+        if (newWindow) {
+          windows.push({ win: newWindow, top: i * 50, left: i * 50, dx: 10, dy: 10 });
+        }
+      }
+
+      // 창 이동 로직
+      setInterval(() => {
+        windows.forEach((obj) => {
+          if (obj.win.closed) return; // 창이 닫혔으면 무시
+
+          obj.left += obj.dx;
+          obj.top += obj.dy;
+
+          // 화면 경계 체크
+          if (obj.left <= 0 || obj.left + 300 >= screen.width) obj.dx *= -1;
+          if (obj.top <= 0 || obj.top + 200 >= screen.height) obj.dy *= -1;
+
+          try {
+            obj.win.moveTo(obj.left, obj.top); // 창 이동
+          } catch (e) {
+            console.error("Window move blocked by browser:", e);
+          }
+        });
+      }, 50);
+    };
+  </script>
+</head>
+<body>
+  <h1>Opening and moving 10 windows...</h1>
+  <p>If this does not work, your browser may be blocking move commands.</p>
+</body>
+</html>
